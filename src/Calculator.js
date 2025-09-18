@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import clickSound from "./ClickSound.m4a";
 
 const Calculator = memo(function Calculator({ workouts, allowSound }) {
@@ -19,6 +19,7 @@ const Calculator = memo(function Calculator({ workouts, allowSound }) {
   //دي انا عملاها عشان تشغل الصوت فقط لما اعدل غي الديوريشن او في allowsound
   useEffect(
     function () {
+      //helper function
       const playSound = function () {
         if (!allowSound) return;
         const sound = new Audio(clickSound);
@@ -29,7 +30,6 @@ const Calculator = memo(function Calculator({ workouts, allowSound }) {
     [duration, allowSound]
   );
 
-  // const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak;
   const mins = Math.floor(duration);
   const seconds = (duration - mins) * 60;
 
@@ -39,6 +39,18 @@ const Calculator = memo(function Calculator({ workouts, allowSound }) {
   function handleDec() {
     setDuration((duration) => (duration > 0 ? Math.ceil(duration) - 1 : 0));
   }
+
+  // 🔹 إيه هو stale closure؟
+
+  //معناه إن جوه دالة/Effect بتستخدم قيمة من state أو props، بس القيمه دي اتغيرت بعدين، والـ closure (النسخة اللي اتحبست وقت إنشاء الدالة) لسه شايل القيمة القديمة.
+
+  useEffect(
+    function () {
+      console.log(duration, sets);
+      document.title = `Your ${number}-exersice workout`;
+    },
+    [number, duration, sets]
+  );
 
   return (
     <>
